@@ -8,6 +8,7 @@ object main {
   private val MemberList = ArrayBuffer[Member]();
   private val HangeulPattern: Regex = "[^가-힣]".r
   private val NumberPattern: Regex = "[^0-9]".r
+  private val lastid = 1
 
   private class Member {
     private var _name = ""
@@ -23,7 +24,7 @@ object main {
 
     def id: Int = _id
 
-    //데이터가 모두 삭제되었을때는 고유ip가 아니고 다시 1로 시작되는것 생각하기
+    //데이터가 모두 삭제되었을때는 고유id가 아니고 다시 1로 시작되는것 생각하기
     def phonenumber_=(newValue: String): Unit = {
       println("세터 폰넘버"+_phonenumber)
       if(_phonenumber.equals("")){
@@ -47,7 +48,8 @@ object main {
     println("2.찾기")
     println("3.삭제")
     println("4.전체목록")
-    println("5.종료")
+    println("5.수정")
+    println("6.종료")
     val key = sc.nextLine()
     keymatchTest(key);
   }
@@ -70,8 +72,8 @@ object main {
 
   //1.등록
   def RegisterProcess(): Unit = {
-    val RegisterName = RegisterNameMatchTest(Registername())
-    val RegisterPhonenumber = RegisterPhoneMatchTest(Registerphonenumber())
+    val RegisterName = NameMatchTest(Registername())
+    val RegisterPhonenumber = RegisterPhoneMatchTest(PhonenumberLength())
     val Checkreturn = Check(RegisterName, RegisterPhonenumber);
     CheckMatchTest(Checkreturn, RegisterName, RegisterPhonenumber);
   }
@@ -84,30 +86,22 @@ object main {
     else RegisterName
   }
 
-  def RegisterNameMatchTest(RegisterName: String): String = {
+  def NameMatchTest(RegisterName: String): String = {
     HangeulPattern.findFirstMatchIn(RegisterName) match {
       case None => println("한글확인")
         RegisterName
       case Some(_) => println("한글만 입력해주세요")
-        RegisterNameMatchTest(Registername());
+        NameMatchTest(Registername());
     }
   }
-  //case "가" => RegisterName
-  //    case _ => println("한글만 입력해주세요")
-  //              RegisterNameMatchTest(Registername());
 
-  /*
-  HangeulPattern.findFirstMatchIn("awesomepasword") match{
-    case Some(_) => println("password Ok")
-    case None => println("password must contain a number")
-  }*/
 
-  def Registerphonenumber(): String = {
+  def PhonenumberLength(): String = {
     println("전화번호 입력")
     val RegisterPhonenumber = sc.nextLine()
     if (RegisterPhonenumber.length==11) RegisterPhonenumber
     else {println("전화번호는 11자리")
-      Registerphonenumber();
+      PhonenumberLength();
     }
   }
 
@@ -116,14 +110,10 @@ object main {
       case None => println("숫자확인")
         RegisterPhonenumber
       case Some(_) => println("숫자만 입력해주세요")
-        RegisterPhoneMatchTest(Registerphonenumber());
+        RegisterPhoneMatchTest(PhonenumberLength());
     }
   }
 
-    //case "010" => RegisterPhonenumber
-    //    case "123" => RegisterPhonenumber
-    //    case _ => println("숫자만 입력해주세요")
-    //      RegisterNameMatchTest(Registerphonenumber());
 
     def Check(RegisterName: String, RegisterPhonenumber: String): String = {
       println("최종확인")
@@ -142,14 +132,9 @@ object main {
           member.name = RegisterName
           member.phonenumber = RegisterPhonenumber
           MemberList.addOne(member)
-          /*
-          println("멤버이름 " + member.name)
-          println("멤버폰번호 " + member.phonenumber)
-          println("멤버 등록 확인" + MemberList(0).name + MemberList(0).phonenumber)*/
           println("등록완료")
           println("")
           Begin()
-        //데이터 저장하기 추가 해야됨
         case "n"|"ㅜ" =>
           println("재입력")
           RegisterProcess();
@@ -184,6 +169,8 @@ object main {
         case _ =>
       })
       println("")
+
+      //동명이인이 있을시 id로 구분
       if(TempIdList.length >= 2) {
         ChoiceId()
         def ChoiceId():Unit ={
@@ -266,12 +253,12 @@ object main {
       if(UpdateName.length==1) { println("이름은 두글자이상")
         UpdateProcess(id) }
       else UpdateName
-      RegisterNameMatchTest(UpdateName)
+      NameMatchTest(UpdateName)
       println("수정할 전화번호를 입력해주세요")
       val UpdatePhonenumber = sc.nextLine()
       if (UpdatePhonenumber.length==11) UpdatePhonenumber
       else {println("전화번호는 11자리")
-        Registerphonenumber();
+        PhonenumberLength();
       }
       RegisterPhoneMatchTest(UpdatePhonenumber)
       val UpdateMember = TempMemberList(0)
