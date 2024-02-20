@@ -8,7 +8,7 @@ object main {
   private val MemberList = ArrayBuffer[Member]();
   private val HangeulPattern: Regex = "[^가-힣]".r
   private val NumberPattern: Regex = "[^0-9]".r
-  private val lastid = 1
+  private val lastidcontainer =ArrayBuffer[Int]()
 
   private class Member {
     private var _name = ""
@@ -28,11 +28,13 @@ object main {
     def phonenumber_=(newValue: String): Unit = {
       println("세터 폰넘버"+_phonenumber)
       if(_phonenumber.equals("")){
-      if(MemberList.isEmpty) {_id = id
+      if(lastidcontainer.isEmpty) {_id = _id
+        lastidcontainer.addOne(_id)
         println("엠티 id 생성")}
       else {
         println("else id 생성")
-        _id += _id
+        _id =lastidcontainer(0) + 1
+        lastidcontainer.update(0,_id)
       }
 
       }
