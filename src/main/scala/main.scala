@@ -9,6 +9,7 @@ object main {
   private val HangeulPattern: Regex = "[^가-힣]".r
   private val NumberPattern: Regex = "[^0-9]".r
   private var Members = List[Member]()
+  private var key:String = ""
   private case class Member(name: String, PhoneNumber: String)
 
 
@@ -21,76 +22,83 @@ object main {
     println("4.전체목록")
     println("5.수정")
     println("6.종료")
-    val key = sc.nextLine().toInt
-    keymatchTest(key);
+    keymatchTest();
   }
 
-  def keymatchTest(key: Int) = key match {
-    case 1 => RegisterProcess(key)
-    case 2 => SearchProcess(key)
-    case 3 => println("삭제 대상 찾기")
-      SearchProcess(key)
-    case 4 => ListProcess()
-    case 5 => println("수정 대상 찾기")
-      SearchProcess(key)
-    case 6 => System.exit(0);
+  def keymatchTest() = {
+    key = sc.nextLine()
+    key match {
+    case "1" => RegisterProcess()
+    case "2" => SearchProcess(key.toInt)
+    case "3" => println("삭제 대상 찾기")
+      SearchProcess(key.toInt)
+    case "4" => ListProcess()
+    case "5" => println("수정 대상 찾기")
+      SearchProcess(key.toInt)
+    case "6" => System.exit(0);
     case _ => println("입력오류")
       println("1~6 사이의 숫자를 입력해주세요")
       println("")
       Begin();
-  }
+  }}
   //시작화면 끝
 
   //1.등록
-  def RegisterProcess(key:Int): Unit = {
-    val RegisterName = NameMatchTest(Registername(key),key)
-    val RegisterPhonenumber = RegisterPhoneMatchTest(PhonenumberLength())
-    val Checkreturn = check(RegisterName, RegisterPhonenumber);
-    checkMatchTest(Checkreturn, RegisterName, RegisterPhonenumber, key);
+  def RegisterProcess(): Unit = {
+    val RegisterName = NameMatchTest(Registername()) // 이름입력과 한글검사
+    val RegisterPhonenumber = phoneDuplicatecheck(PhoneMatchTest(Phonenumber())) // 번호입력과 숫자검사
+    val Checkreturn = check(RegisterName, RegisterPhonenumber);//최종확인
+    finalRegister(Checkreturn, RegisterName, RegisterPhonenumber);//최종등록
   }
 
-  def Registername(key:Int): String = {
-    if(key==1) println("이름 입력")
-    if(key==5) println("수정할 이름 입력")
+  def Registername(): String = { //이름입력 및 이름글자수 검사
+    println("뒤로 돌아가시려면 0번을 입력해주세요.")
+    if(key.toInt==1) println("이름 입력")
+    if(key.toInt==5) println("수정할 이름 입력")
     val RegisterName = sc.nextLine()
+    if(RegisterName=="0") Begin()
     if (RegisterName.length == 1) {
       println("이름은 두글자이상")
-      Registername(key)
+      Registername()
     }
     else RegisterName
   }
 
-  def NameMatchTest(RegisterName: String, key:Int): String = {
+  def NameMatchTest(RegisterName: String): String = { // 이름 한글검사
     HangeulPattern.findFirstMatchIn(RegisterName) match {
-      case _ => println("한글확인")
+      case None => println("한글확인")
         RegisterName
       case Some(_) => println("한글만 입력해주세요")
-        NameMatchTest(Registername(key),key);
+        NameMatchTest(Registername())
+      case _ => println("오류")
+        NameMatchTest(Registername())
     }
   }
 
 
-  def PhonenumberLength(): String = {
+  def Phonenumber(): String = { //전화번호 자리수 검사
     println("전화번호 입력")
     val RegisterPhonenumber = sc.nextLine()
     if (RegisterPhonenumber.length == 11) RegisterPhonenumber
     else {
       println("전화번호는 11자리")
-      PhonenumberLength();
+      Phonenumber();
     }
   }
 
-  def RegisterPhoneMatchTest(RegisterPhonenumber: String): String = {
+  def PhoneMatchTest(RegisterPhonenumber: String): String = { //전화번호 숫자검사
     NumberPattern.findFirstMatchIn(RegisterPhonenumber) match {
-      case _ => println("숫자확인")
+      case None => println("숫자확인")
         RegisterPhonenumber
       case Some(_) => println("숫자만 입력해주세요")
-        RegisterPhoneMatchTest(PhonenumberLength());
+        PhoneMatchTest(Phonenumber());
+      case _ => println("오류")
+        PhoneMatchTest(Phonenumber());
     }
   }
 
 
-  def check(RegisterName: String, RegisterPhonenumber: String): String = {
+  def check(RegisterName: String, RegisterPhonenumber: String): String = { //정보 최종확인
     println("최종확인")
     println("이름 : " + RegisterName)
     println("전화번호 : " + RegisterPhonenumber)
@@ -100,7 +108,7 @@ object main {
   }
 
   //변수가 긴 이유는 이름과 전화번호를 받아서 입력오류시 다시 Check 메소드를 호출하기 위함
-  def checkMatchTest(Checkreturn: String, RegisterName: String, RegisterPhonenumber: String, key:Int): Unit = {
+  def finalRegister(Checkreturn: String, RegisterName: String, RegisterPhonenumber: String): Unit = { // 최종등록
     Checkreturn match {
       case "y" | "ㅛ" =>
         val member = Member(RegisterName, RegisterPhonenumber)
@@ -111,11 +119,22 @@ object main {
         Begin()
       case "n" | "ㅜ" =>
         println("재입력")
-        RegisterProcess(key);
+        RegisterProcess();
       case _ => println("입력오류, 다시 입력해주세요")
         println("")
-        checkMatchTest(check(RegisterName, RegisterPhonenumber), RegisterName, RegisterPhonenumber, key)
+        finalRegister(check(RegisterName, RegisterPhonenumber), RegisterName, RegisterPhonenumber)
     }
+  }
+
+  def phoneDuplicatecheck(checkPhonenumber: String): String = {
+    println(checkPhonenumber)
+    Members.foreach(Member => Member.PhoneNumber match  {
+      case `checkPhonenumber` => println("중복된 번호가 있습니다. 다시 입력해주세요.")
+        return phoneDuplicatecheck(PhoneMatchTest(Phonenumber()))
+
+      case _ =>
+    })
+    checkPhonenumber
   }
   //등록 끝
 
@@ -125,7 +144,7 @@ object main {
     println("2. 전화번호로 찾기")
     val SearchKey = sc.nextLine();
     SearchKey match {
-      case "1" => NameSearchProcess(int);
+      case "1" => NameSearchProcess();
       case "2" => PhoneNumberSearchProcess(int);
       case _ => println("입력오류, 다시 입력해주세요.")
         SearchProcess(int)
@@ -133,14 +152,12 @@ object main {
   }
 
   //이름은 동명이인이 있을 수도 있으니 id로 구분
-  def NameSearchProcess(int: Int) = {
+  def NameSearchProcess() = {
     var TempIdList = List[Int]()
     println("이름 입력")
     val SearchName = sc.nextLine()
     Members.foreach(Member => Member.name match {
       case SearchName =>
-        val name = Member.name
-        val phonenumber = Member.PhoneNumber
         val id = Members.indexOf(Member)
         TempIdList = TempIdList :+ id
       case _ =>
@@ -155,8 +172,8 @@ object main {
       println("찾기완료")
       println("")
     }
-    if (int == 2) Begin()
-    if (int == 3 || int == 5) sameNamecheck(TempIdList, int)
+    if (key.toInt == 2) Begin()
+    if (key.toInt == 3 || key.toInt == 5) sameNamecheck(TempIdList)
   }
 
 
@@ -180,7 +197,7 @@ object main {
     }
     if (int == 2) Begin()
     if (int == 3) DeleteProcess(tempid)
-    if (int == 5) UpdateProcess(tempid, int:Int)
+    if (int == 5) UpdateProcess(tempid)
   }
 
   //찾기 끝
@@ -190,12 +207,12 @@ object main {
     println("정말로 삭제 하시겠습니까? y/n")
     val deletecheck = sc.nextLine()
     deletecheck match {
-      case "y" =>
+      case "y"| "ㅛ" =>
         Members = Members.filterNot(Member => Members.indexOf(Member) == id)
         println("삭제완료")
         println("")
         Begin();
-      case "n" => println("처음으로 돌아갑니다.")
+      case "n"| "ㅜ" => println("처음으로 돌아갑니다.")
         println("")
         Begin();
       case _ => println("잘못된 입력입니다.")
@@ -203,36 +220,36 @@ object main {
     }
   }
 
-  def sameNamecheck(Tempidlist: List[Int], key: Int): Unit = {
+  def sameNamecheck(Tempidlist: List[Int]): Unit = {
     if(Tempidlist.length ==1){
-      if (key == 3) DeleteProcess(Tempidlist.head)
+      if (key.toInt == 3) DeleteProcess(Tempidlist.head)
 
-      if (key == 5 ) UpdateProcess(Tempidlist.head,key)
+      if (key.toInt == 5 ) UpdateProcess(Tempidlist.head)
     }
-    if(key==3){
+    if(key.toInt==3){
       println("삭제할 사람의 id를 입력해 주세요")
       val deleteid = sc.nextLine().toInt
       DeleteProcess(deleteid)
     }
-    if(key==5){
+    if(key.toInt==5){
       println("수정할 사람의 id를 입력해 주세요")
       val updateid = sc.nextLine().toInt
-      UpdateProcess(updateid,key)
+      UpdateProcess(updateid)
     }
   }
 
     //삭제 끝
 
     //4. 수정
-    def UpdateProcess(id: Int, int:Int):Unit = {
-      val UpdateName = NameMatchTest(Registername(int),int)
-      val UpdatePhonenumber = RegisterPhoneMatchTest(PhonenumberLength())
+    def UpdateProcess(id: Int):Unit = {
+      val UpdateName = NameMatchTest(Registername())
+      val UpdatePhonenumber = PhoneMatchTest(Phonenumber())
       val Checkreturn = check(UpdateName, UpdatePhonenumber);
-      UpdateCheckMatchTest(Checkreturn, id, UpdateName, UpdatePhonenumber,int);
+      finalUpdateMatchTest(Checkreturn, id, UpdateName, UpdatePhonenumber);
 
     }
 
-  def UpdateCheckMatchTest(Checkreturn: String, id : Int, UpdateName: String, UpdatePhonenumber: String, int:Int): Unit = {
+  def finalUpdateMatchTest(Checkreturn: String, id : Int, UpdateName: String, UpdatePhonenumber: String): Unit = {
     Checkreturn match {
       case "y"|"ㅛ" =>
         val UpdateMember = Member(UpdateName,UpdatePhonenumber)
@@ -244,10 +261,10 @@ object main {
       //데이터 저장하기 추가 해야됨
       case "n"|"ㅜ" =>
         println("재입력")
-        UpdateProcess(id,int);
+        UpdateProcess(id);
       case _ => println("입력오류, 다시 입력해주세요")
         println("")
-        UpdateCheckMatchTest(Checkreturn, id, UpdateName, UpdatePhonenumber,int);
+        finalUpdateMatchTest(Checkreturn, id, UpdateName, UpdatePhonenumber);
     }
   }
 
@@ -257,11 +274,9 @@ object main {
     def ListProcess(): Unit = {
       println("전체목록")
       Members.foreach(Member => println(s"id : ${Members.indexOf(Member)} 이름 : ${Member.name} 전화번호 : ${Member.PhoneNumber}"))
-      println("처음으로 돌아가시려면 아무거나 입력해주세요.")
-      val again = sc.nextLine()
-      again match {
-        case _ => Begin()
-      }
+      println("")
+      Begin()
+
     }
     //전체목록 끝
 
