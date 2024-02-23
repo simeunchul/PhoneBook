@@ -103,7 +103,6 @@ object main {
   def SearchMenu():Unit = {
     println(
       """
-        |전화번호부
         |1.이름으로 찾기
         |2.전화번호로 찾기
         |3.주소로 찾기
@@ -169,7 +168,6 @@ object main {
   def DeleteMenu(): Unit = {
     println(
       """
-        |전화번호부
         |1.이름으로 찾기
         |2.전화번호로 찾기
         |3.주소로 찾기
@@ -227,7 +225,6 @@ object main {
   def UpdateMenu(): Unit = {
     println(
       """
-        |전화번호부
         |1.이름으로 찾기
         |2.전화번호로 찾기
         |3.주소로 찾기
@@ -251,9 +248,9 @@ object main {
       ShowMenu()
     }
     else {
-      val InputName = Input("이름입력", NameValidate).getOrElse("Nothing")
-      val InputPhone = Input("번호입력", PhoneValidate).getOrElse("Nothing")
-      println("주소입력")
+      val InputName = Input("수정할 이름입력", NameValidate).getOrElse("Nothing")
+      val InputPhone = Input("수정할 번호입력", PhoneValidate).getOrElse("Nothing")
+      println("수정할 주소입력")
       val InputAddress = Option(scala.io.StdIn.readLine())
       Members = Members.updated(Members.indexOf(UpdateMemberOption.get),Member(InputName,InputPhone,InputAddress))
       println("수정완료")
@@ -267,9 +264,9 @@ object main {
       ShowMenu()
     }
     else {
-      val InputName = Input("이름입력", NameValidate).getOrElse("Nothing")
-      val InputPhone = Input("번호입력", PhoneValidate).getOrElse("Nothing")
-      println("주소입력")
+      val InputName = Input("수정할 이름입력", NameValidate).getOrElse("Nothing")
+      val InputPhone = Input("수정할 번호입력", PhoneValidate).getOrElse("Nothing")
+      println("수정할 주소입력")
       val InputAddress = Option(scala.io.StdIn.readLine())
       Members = Members.updated(Members.indexOf(UpdateMemberOption.get),Member(InputName,InputPhone,InputAddress))
       println("수정완료")
@@ -283,9 +280,9 @@ object main {
       ShowMenu()
     }
     else {
-      val InputName = Input("이름입력", NameValidate).getOrElse("Nothing")
-      val InputPhone = Input("번호입력", PhoneValidate).getOrElse("Nothing")
-      println("주소입력")
+      val InputName = Input("수정할 이름입력", NameValidate).getOrElse("Nothing")
+      val InputPhone = Input("수정할 번호입력", PhoneValidate).getOrElse("Nothing")
+      println("수정할 주소입력")
       val InputAddress = Option(scala.io.StdIn.readLine())
       Members = Members.updated(Members.indexOf(UpdateMemberOption.get),Member(InputName,InputPhone,InputAddress))
       println("수정완료")
