@@ -1,8 +1,3 @@
-import jdk.internal.util.xml.impl.Input
-
-import java.util.Scanner
-import scala.::
-import scala.collection.mutable.ArrayBuffer
 import scala.util.matching.Regex
 
 object main {
@@ -158,7 +153,7 @@ object main {
       ShowMenu()
     }
   }
-  /* 변수만 반복되는걸 한개로 합치는 방법은 없을까
+  /* 변수만 다르고 반복되는걸 한개로 합치는 방법은 없을까
   def SearchProcess(input:String):Unit = {
     val FindMemberOption = Members.find(member => member.address.get == input)
     if(FindMemberOption.isEmpty) {println("찾는 정보가 없습니다.")
@@ -193,24 +188,39 @@ object main {
     func(input)
   }
   def NameDelete(input: String):Unit = {
-    Members = Members.filterNot(member => member.name == input)
-    println("삭제완료")
-    println(Members)
-    ShowMenu()
+    val FindMemberOption = Members.find(member => member.name == input)
+    if(FindMemberOption.isEmpty) {println("찾는 정보가 없습니다.")
+      ShowMenu()
+    }
+    else {
+      Members = Members.filterNot(member => member.name == input)
+      println("삭제완료")
+      ShowMenu()
+    }
   }
 
   def PhoneNumberDelete(input: String):Unit = {
-    Members = Members.filterNot(member => member.phoneNumber == input)
-    println("삭제완료")
-    println(Members)
-    ShowMenu()
+    val FindMemberOption = Members.find(member => member.phoneNumber == input)
+    if(FindMemberOption.isEmpty) {println("찾는 정보가 없습니다.")
+      ShowMenu()
+    }
+    else {
+      Members = Members.filterNot(member => member.phoneNumber == input)
+      println("삭제완료")
+      ShowMenu()
+    }
   }
 
   def AddressDelete(input: String):Unit = {
-    Members = Members.filterNot(member => member.address.get == input)
-    println("삭제완료")
-    println(Members)
-    ShowMenu()
+    val FindMemberOption = Members.find(member => member.address.get == input)
+    if(FindMemberOption.isEmpty) {println("찾는 정보가 없습니다.")
+      ShowMenu()
+    }
+    else {
+      Members = Members.filterNot(member => member.address.get == input)
+      println("삭제완료")
+      ShowMenu()
+    }
   }
 
   //5. 수정
@@ -246,7 +256,7 @@ object main {
       println("주소입력")
       val InputAddress = Option(scala.io.StdIn.readLine())
       Members = Members.updated(Members.indexOf(UpdateMemberOption.get),Member(InputName,InputPhone,InputAddress))
-      println(Members)
+      println("수정완료")
       ShowMenu()
     }
   }
@@ -262,7 +272,7 @@ object main {
       println("주소입력")
       val InputAddress = Option(scala.io.StdIn.readLine())
       Members = Members.updated(Members.indexOf(UpdateMemberOption.get),Member(InputName,InputPhone,InputAddress))
-      println(Members)
+      println("수정완료")
       ShowMenu()
     }
   }
@@ -278,7 +288,7 @@ object main {
       println("주소입력")
       val InputAddress = Option(scala.io.StdIn.readLine())
       Members = Members.updated(Members.indexOf(UpdateMemberOption.get),Member(InputName,InputPhone,InputAddress))
-      println(Members)
+      println("수정완료")
       ShowMenu()
     }
   }
