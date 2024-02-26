@@ -32,12 +32,12 @@ object main {
     )
     readLine() match {
       case "1" => register()
-      case "2" => rudMenu("search") //read,update,delete menu
+      case "2" => readUpdateDeleteMenu("search") //read,update,delete menu
       case "3" => println("삭제 대상 찾기")
-        rudMenu("delete") //read,update,delete menu
+        readUpdateDeleteMenu("delete") //read,update,delete menu
       case "4" => printMembers()
       case "5" => println("수정 대상 찾기")
-        rudMenu("update") //read,update,delete menu
+        readUpdateDeleteMenu("update") //read,update,delete menu
       case "6" => System.exit(0);
       case _ => println("입력오류")
         println("1~6 사이의 숫자를 입력해주세요")
@@ -102,7 +102,7 @@ object main {
   }
 
   //read,update,delete menu
-  def rudMenu(rudKey: String): Unit = {
+  def readUpdateDeleteMenu(rudKey: String): Unit = {
     println(
       """
         |1.이름으로 찾기
