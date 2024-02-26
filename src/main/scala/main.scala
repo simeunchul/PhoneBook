@@ -102,7 +102,7 @@ object main {
   }
 
   //read,update,delete menu
-  def readUpdateDeleteMenu(rudKey: String): Unit = {
+  def readUpdateDeleteMenu(readUpdateDeleteKind: String): Unit = {
     println(
       """
         |1.이름으로 찾기
@@ -111,9 +111,9 @@ object main {
         |""".stripMargin
     )
     readLine() match {
-      case "1" => gennericFunc(rudKey,findMember("이름 입력","nameFind"))
-      case "2" => gennericFunc(rudKey,findMember("전화번호 입력","phoneNumberFind"))
-      case "3" => gennericFunc(rudKey,findMember("주소 입력","addressFind"))
+      case "1" => gennericFunc(readUpdateDeleteKind,findMember("이름 입력","nameFind"))
+      case "2" => gennericFunc(readUpdateDeleteKind,findMember("전화번호 입력","phoneNumberFind"))
+      case "3" => gennericFunc(readUpdateDeleteKind,findMember("주소 입력","addressFind"))
     }
   }
   def findMember(message:String,findKind: String): Option[Member]= {
@@ -184,7 +184,6 @@ object main {
     }
   }
 
-
   //5.전체목록
   def printMembers(): Unit = {
     println("전체목록")
@@ -198,7 +197,4 @@ object main {
   def main(args: Array[String]): Unit = {
     showMenu()
   }
-
-
-
 }
